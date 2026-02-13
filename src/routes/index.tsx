@@ -1,11 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
+import { DocxViewer } from '@/components/DocxViewer'
+import { LexicalEditor } from '@/components/LexicalEditor'
 
-export const Route = createFileRoute("/")({ component: App });
+export const Route = createFileRoute('/')({
+  component: RouteComponent,
+})
 
-function App() {
+function RouteComponent() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <div className="font-medium">Hello World</div>
+    <div className="flex flex-col gap-4">
+      <DocxViewer />
+      <LexicalEditor />
     </div>
-  );
+  )
 }
