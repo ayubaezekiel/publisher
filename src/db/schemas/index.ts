@@ -1,2 +1,6 @@
 export * from './auth-schema'
 export * from './profile'
+export * from './communities'
+export * from './collections'
+export * from './items'
+export * from './bitstreams'

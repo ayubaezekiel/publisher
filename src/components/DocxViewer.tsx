@@ -530,7 +530,7 @@ export function DocxViewer() {
     <div className="min-h-screen bg-background">
       {/* Top bar */}
       <div className="sticky top-0 z-30 bg-background border-b">
-        <div className="max-w-5xl mx-auto px-4 h-12 flex items-center justify-between gap-4">
+        <div className="mx-auto px-4 h-12 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 min-w-0">
             <svg
               width="15"
@@ -605,7 +605,7 @@ export function DocxViewer() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
+      <div className="w-full px-4 py-8 grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
         {/* Left: metadata card (sticky on desktop) */}
         <div className="lg:sticky lg:top-20">
           <PaperMetaCard paper={paper} />

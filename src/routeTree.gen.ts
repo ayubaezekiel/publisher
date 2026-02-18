@@ -13,7 +13,19 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as CommunitiesIndexRouteImport } from './routes/communities/index'
+import { Route as ItemsIdRouteImport } from './routes/items/$id'
+import { Route as CommunitiesSlugRouteImport } from './routes/communities/$slug'
+import { Route as CollectionsSlugRouteImport } from './routes/collections/$slug'
+import { Route as DashboardSubmitIndexRouteImport } from './routes/dashboard/submit/index'
+import { Route as DashboardMySubmissionsIndexRouteImport } from './routes/dashboard/my-submissions/index'
+import { Route as DashboardCommunitiesIndexRouteImport } from './routes/dashboard/communities/index'
+import { Route as DashboardCollectionsIndexRouteImport } from './routes/dashboard/collections/index'
+import { Route as DashboardCommunitiesNewRouteImport } from './routes/dashboard/communities/new'
+import { Route as DashboardCollectionsNewRouteImport } from './routes/dashboard/collections/new'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as DashboardCommunitiesIdEditRouteImport } from './routes/dashboard/communities/$id/edit'
+import { Route as DashboardCollectionsIdEditRouteImport } from './routes/dashboard/collections/$id/edit'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -35,48 +47,213 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunitiesIndexRoute = CommunitiesIndexRouteImport.update({
+  id: '/communities/',
+  path: '/communities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItemsIdRoute = ItemsIdRouteImport.update({
+  id: '/items/$id',
+  path: '/items/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunitiesSlugRoute = CommunitiesSlugRouteImport.update({
+  id: '/communities/$slug',
+  path: '/communities/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsSlugRoute = CollectionsSlugRouteImport.update({
+  id: '/collections/$slug',
+  path: '/collections/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSubmitIndexRoute = DashboardSubmitIndexRouteImport.update({
+  id: '/dashboard/submit/',
+  path: '/dashboard/submit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardMySubmissionsIndexRoute =
+  DashboardMySubmissionsIndexRouteImport.update({
+    id: '/dashboard/my-submissions/',
+    path: '/dashboard/my-submissions/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCommunitiesIndexRoute =
+  DashboardCommunitiesIndexRouteImport.update({
+    id: '/dashboard/communities/',
+    path: '/dashboard/communities/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCollectionsIndexRoute =
+  DashboardCollectionsIndexRouteImport.update({
+    id: '/dashboard/collections/',
+    path: '/dashboard/collections/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCommunitiesNewRoute = DashboardCommunitiesNewRouteImport.update({
+  id: '/dashboard/communities/new',
+  path: '/dashboard/communities/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardCollectionsNewRoute = DashboardCollectionsNewRouteImport.update({
+  id: '/dashboard/collections/new',
+  path: '/dashboard/collections/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardCommunitiesIdEditRoute =
+  DashboardCommunitiesIdEditRouteImport.update({
+    id: '/dashboard/communities/$id/edit',
+    path: '/dashboard/communities/$id/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardCollectionsIdEditRoute =
+  DashboardCollectionsIdEditRouteImport.update({
+    id: '/dashboard/collections/$id/edit',
+    path: '/dashboard/collections/$id/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
+  '/items/$id': typeof ItemsIdRoute
+  '/communities/': typeof CommunitiesIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
+  '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/collections/': typeof DashboardCollectionsIndexRoute
+  '/dashboard/communities/': typeof DashboardCommunitiesIndexRoute
+  '/dashboard/my-submissions/': typeof DashboardMySubmissionsIndexRoute
+  '/dashboard/submit/': typeof DashboardSubmitIndexRoute
+  '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
+  '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
+  '/items/$id': typeof ItemsIdRoute
+  '/communities': typeof CommunitiesIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
+  '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/collections': typeof DashboardCollectionsIndexRoute
+  '/dashboard/communities': typeof DashboardCommunitiesIndexRoute
+  '/dashboard/my-submissions': typeof DashboardMySubmissionsIndexRoute
+  '/dashboard/submit': typeof DashboardSubmitIndexRoute
+  '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
+  '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/collections/$slug': typeof CollectionsSlugRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
+  '/items/$id': typeof ItemsIdRoute
+  '/communities/': typeof CommunitiesIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
+  '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/collections/': typeof DashboardCollectionsIndexRoute
+  '/dashboard/communities/': typeof DashboardCommunitiesIndexRoute
+  '/dashboard/my-submissions/': typeof DashboardMySubmissionsIndexRoute
+  '/dashboard/submit/': typeof DashboardSubmitIndexRoute
+  '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
+  '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/dashboard/' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/collections/$slug'
+    | '/communities/$slug'
+    | '/items/$id'
+    | '/communities/'
+    | '/dashboard/'
+    | '/api/auth/$'
+    | '/dashboard/collections/new'
+    | '/dashboard/communities/new'
+    | '/dashboard/collections/'
+    | '/dashboard/communities/'
+    | '/dashboard/my-submissions/'
+    | '/dashboard/submit/'
+    | '/dashboard/collections/$id/edit'
+    | '/dashboard/communities/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/dashboard' | '/api/auth/$'
-  id: '__root__' | '/' | '/about' | '/contact' | '/dashboard/' | '/api/auth/$'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/collections/$slug'
+    | '/communities/$slug'
+    | '/items/$id'
+    | '/communities'
+    | '/dashboard'
+    | '/api/auth/$'
+    | '/dashboard/collections/new'
+    | '/dashboard/communities/new'
+    | '/dashboard/collections'
+    | '/dashboard/communities'
+    | '/dashboard/my-submissions'
+    | '/dashboard/submit'
+    | '/dashboard/collections/$id/edit'
+    | '/dashboard/communities/$id/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/collections/$slug'
+    | '/communities/$slug'
+    | '/items/$id'
+    | '/communities/'
+    | '/dashboard/'
+    | '/api/auth/$'
+    | '/dashboard/collections/new'
+    | '/dashboard/communities/new'
+    | '/dashboard/collections/'
+    | '/dashboard/communities/'
+    | '/dashboard/my-submissions/'
+    | '/dashboard/submit/'
+    | '/dashboard/collections/$id/edit'
+    | '/dashboard/communities/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  CollectionsSlugRoute: typeof CollectionsSlugRoute
+  CommunitiesSlugRoute: typeof CommunitiesSlugRoute
+  ItemsIdRoute: typeof ItemsIdRoute
+  CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  DashboardCollectionsNewRoute: typeof DashboardCollectionsNewRoute
+  DashboardCommunitiesNewRoute: typeof DashboardCommunitiesNewRoute
+  DashboardCollectionsIndexRoute: typeof DashboardCollectionsIndexRoute
+  DashboardCommunitiesIndexRoute: typeof DashboardCommunitiesIndexRoute
+  DashboardMySubmissionsIndexRoute: typeof DashboardMySubmissionsIndexRoute
+  DashboardSubmitIndexRoute: typeof DashboardSubmitIndexRoute
+  DashboardCollectionsIdEditRoute: typeof DashboardCollectionsIdEditRoute
+  DashboardCommunitiesIdEditRoute: typeof DashboardCommunitiesIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,11 +286,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/communities/': {
+      id: '/communities/'
+      path: '/communities'
+      fullPath: '/communities/'
+      preLoaderRoute: typeof CommunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/items/$id': {
+      id: '/items/$id'
+      path: '/items/$id'
+      fullPath: '/items/$id'
+      preLoaderRoute: typeof ItemsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/communities/$slug': {
+      id: '/communities/$slug'
+      path: '/communities/$slug'
+      fullPath: '/communities/$slug'
+      preLoaderRoute: typeof CommunitiesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections/$slug': {
+      id: '/collections/$slug'
+      path: '/collections/$slug'
+      fullPath: '/collections/$slug'
+      preLoaderRoute: typeof CollectionsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/submit/': {
+      id: '/dashboard/submit/'
+      path: '/dashboard/submit'
+      fullPath: '/dashboard/submit/'
+      preLoaderRoute: typeof DashboardSubmitIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/my-submissions/': {
+      id: '/dashboard/my-submissions/'
+      path: '/dashboard/my-submissions'
+      fullPath: '/dashboard/my-submissions/'
+      preLoaderRoute: typeof DashboardMySubmissionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/communities/': {
+      id: '/dashboard/communities/'
+      path: '/dashboard/communities'
+      fullPath: '/dashboard/communities/'
+      preLoaderRoute: typeof DashboardCommunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/collections/': {
+      id: '/dashboard/collections/'
+      path: '/dashboard/collections'
+      fullPath: '/dashboard/collections/'
+      preLoaderRoute: typeof DashboardCollectionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/communities/new': {
+      id: '/dashboard/communities/new'
+      path: '/dashboard/communities/new'
+      fullPath: '/dashboard/communities/new'
+      preLoaderRoute: typeof DashboardCommunitiesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/collections/new': {
+      id: '/dashboard/collections/new'
+      path: '/dashboard/collections/new'
+      fullPath: '/dashboard/collections/new'
+      preLoaderRoute: typeof DashboardCollectionsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/communities/$id/edit': {
+      id: '/dashboard/communities/$id/edit'
+      path: '/dashboard/communities/$id/edit'
+      fullPath: '/dashboard/communities/$id/edit'
+      preLoaderRoute: typeof DashboardCommunitiesIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/collections/$id/edit': {
+      id: '/dashboard/collections/$id/edit'
+      path: '/dashboard/collections/$id/edit'
+      fullPath: '/dashboard/collections/$id/edit'
+      preLoaderRoute: typeof DashboardCollectionsIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -123,8 +384,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  CollectionsSlugRoute: CollectionsSlugRoute,
+  CommunitiesSlugRoute: CommunitiesSlugRoute,
+  ItemsIdRoute: ItemsIdRoute,
+  CommunitiesIndexRoute: CommunitiesIndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  DashboardCollectionsNewRoute: DashboardCollectionsNewRoute,
+  DashboardCommunitiesNewRoute: DashboardCommunitiesNewRoute,
+  DashboardCollectionsIndexRoute: DashboardCollectionsIndexRoute,
+  DashboardCommunitiesIndexRoute: DashboardCommunitiesIndexRoute,
+  DashboardMySubmissionsIndexRoute: DashboardMySubmissionsIndexRoute,
+  DashboardSubmitIndexRoute: DashboardSubmitIndexRoute,
+  DashboardCollectionsIdEditRoute: DashboardCollectionsIdEditRoute,
+  DashboardCommunitiesIdEditRoute: DashboardCommunitiesIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
