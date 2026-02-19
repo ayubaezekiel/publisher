@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Award, BookOpen, Eye, Lightbulb, Target, Users } from 'lucide-react'
 import { Hero } from '@/components/hero'
-// Import generated images
-import aboutHeroImage from '@/../../.gemini/antigravity/brain/30cbe2f3-db68-40aa-acc9-653a1672ff11/about_hero_university_alt_1771244617332.png'
-import missionImage from '@/../../.gemini/antigravity/brain/30cbe2f3-db68-40aa-acc9-653a1672ff11/about_mission_collaboration_1771244550200.png'
+import aboutHeroImage from '/about_hero_university_alt_1771244617332.png'
+import missionImage from '/about_mission_collaboration_1771244550200.png'
 
 export const Route = createFileRoute('/about')({
   component: AboutPage,
