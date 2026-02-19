@@ -1,18 +1,26 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import {
   ArrowRight,
   FileText,
   FolderOpen,
   PlusCircle,
   Settings2,
+  Shield,
   Upload,
   Users,
   Wrench,
 } from 'lucide-react'
 import { DocxViewer } from '@/components/DocxViewer'
 import { LexicalEditor } from '@/components/LexicalEditor'
+import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/')({
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session?.user) throw redirect({ to: '/' })
+    return { user: session.user }
+  },
+  loader: ({ context }) => context,
   component: RouteComponent,
 })
 
@@ -67,6 +75,10 @@ function NavCard({
 }
 
 function RouteComponent() {
+  const { user } = Route.useLoaderData()
+  const isAdmin = (user as any).role === 'admin'
+  const isEditorOrAbove = ['editor', 'admin'].includes((user as any).role ?? '')
+
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full mx-auto px-4 sm:px-6 py-12">
@@ -76,7 +88,8 @@ function RouteComponent() {
             Researcher Dashboard
           </h1>
           <p className="mt-2 text-muted-foreground text-lg">
-            Manage your submissions and research tools.
+            Welcome back, {user.name}. Manage your submissions and research
+            tools.
           </p>
         </div>
 
@@ -109,25 +122,44 @@ function RouteComponent() {
               />
             </div>
 
-            {/* Manage */}
-            <div className="space-y-2">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1.5">
-                <Settings2 className="h-3.5 w-3.5" />
-                Manage
-              </h2>
-              <NavCard
-                to="/dashboard/communities"
-                icon={Users}
-                title="Communities"
-                description="Create and manage research communities."
-              />
-              <NavCard
-                to="/dashboard/collections"
-                icon={FolderOpen}
-                title="Collections"
-                description="Organise collections within communities."
-              />
-            </div>
+            {/* Manage — visible to editors + admins */}
+            {isEditorOrAbove && (
+              <div className="space-y-2">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1.5">
+                  <Settings2 className="h-3.5 w-3.5" />
+                  Manage
+                </h2>
+                <NavCard
+                  to="/dashboard/communities"
+                  icon={Users}
+                  title="Communities"
+                  description="Create and manage research communities."
+                />
+                <NavCard
+                  to="/dashboard/collections"
+                  icon={FolderOpen}
+                  title="Collections"
+                  description="Organise collections within communities."
+                />
+              </div>
+            )}
+
+            {/* Admin Panel — visible to admins only */}
+            {isAdmin && (
+              <div className="space-y-2">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5" />
+                  Administration
+                </h2>
+                <NavCard
+                  to="/dashboard/admin"
+                  icon={Shield}
+                  title="Admin Panel"
+                  description="Manage users, roles, and platform settings."
+                  filled
+                />
+              </div>
+            )}
           </aside>
 
           {/* ── Main: Research Tools ── */}

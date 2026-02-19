@@ -21,9 +21,12 @@ import { Route as DashboardSubmitIndexRouteImport } from './routes/dashboard/sub
 import { Route as DashboardMySubmissionsIndexRouteImport } from './routes/dashboard/my-submissions/index'
 import { Route as DashboardCommunitiesIndexRouteImport } from './routes/dashboard/communities/index'
 import { Route as DashboardCollectionsIndexRouteImport } from './routes/dashboard/collections/index'
+import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard/admin/index'
 import { Route as DashboardCommunitiesNewRouteImport } from './routes/dashboard/communities/new'
 import { Route as DashboardCollectionsNewRouteImport } from './routes/dashboard/collections/new'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as DashboardAdminUsersIndexRouteImport } from './routes/dashboard/admin/users/index'
+import { Route as DashboardAdminSubmissionsIndexRouteImport } from './routes/dashboard/admin/submissions/index'
 import { Route as DashboardCommunitiesIdEditRouteImport } from './routes/dashboard/communities/$id/edit'
 import { Route as DashboardCollectionsIdEditRouteImport } from './routes/dashboard/collections/$id/edit'
 
@@ -90,6 +93,11 @@ const DashboardCollectionsIndexRoute =
     path: '/dashboard/collections/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardAdminIndexRoute = DashboardAdminIndexRouteImport.update({
+  id: '/dashboard/admin/',
+  path: '/dashboard/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardCommunitiesNewRoute = DashboardCommunitiesNewRouteImport.update({
   id: '/dashboard/communities/new',
   path: '/dashboard/communities/new',
@@ -105,6 +113,18 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardAdminUsersIndexRoute =
+  DashboardAdminUsersIndexRouteImport.update({
+    id: '/dashboard/admin/users/',
+    path: '/dashboard/admin/users/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardAdminSubmissionsIndexRoute =
+  DashboardAdminSubmissionsIndexRouteImport.update({
+    id: '/dashboard/admin/submissions/',
+    path: '/dashboard/admin/submissions/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DashboardCommunitiesIdEditRoute =
   DashboardCommunitiesIdEditRouteImport.update({
     id: '/dashboard/communities/$id/edit',
@@ -130,12 +150,15 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
   '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/collections/': typeof DashboardCollectionsIndexRoute
   '/dashboard/communities/': typeof DashboardCommunitiesIndexRoute
   '/dashboard/my-submissions/': typeof DashboardMySubmissionsIndexRoute
   '/dashboard/submit/': typeof DashboardSubmitIndexRoute
   '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
   '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
+  '/dashboard/admin/submissions/': typeof DashboardAdminSubmissionsIndexRoute
+  '/dashboard/admin/users/': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,12 +172,15 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
   '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/admin': typeof DashboardAdminIndexRoute
   '/dashboard/collections': typeof DashboardCollectionsIndexRoute
   '/dashboard/communities': typeof DashboardCommunitiesIndexRoute
   '/dashboard/my-submissions': typeof DashboardMySubmissionsIndexRoute
   '/dashboard/submit': typeof DashboardSubmitIndexRoute
   '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
   '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
+  '/dashboard/admin/submissions': typeof DashboardAdminSubmissionsIndexRoute
+  '/dashboard/admin/users': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,12 +195,15 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/collections/new': typeof DashboardCollectionsNewRoute
   '/dashboard/communities/new': typeof DashboardCommunitiesNewRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/collections/': typeof DashboardCollectionsIndexRoute
   '/dashboard/communities/': typeof DashboardCommunitiesIndexRoute
   '/dashboard/my-submissions/': typeof DashboardMySubmissionsIndexRoute
   '/dashboard/submit/': typeof DashboardSubmitIndexRoute
   '/dashboard/collections/$id/edit': typeof DashboardCollectionsIdEditRoute
   '/dashboard/communities/$id/edit': typeof DashboardCommunitiesIdEditRoute
+  '/dashboard/admin/submissions/': typeof DashboardAdminSubmissionsIndexRoute
+  '/dashboard/admin/users/': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,12 +219,15 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/dashboard/collections/new'
     | '/dashboard/communities/new'
+    | '/dashboard/admin/'
     | '/dashboard/collections/'
     | '/dashboard/communities/'
     | '/dashboard/my-submissions/'
     | '/dashboard/submit/'
     | '/dashboard/collections/$id/edit'
     | '/dashboard/communities/$id/edit'
+    | '/dashboard/admin/submissions/'
+    | '/dashboard/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,12 +241,15 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/dashboard/collections/new'
     | '/dashboard/communities/new'
+    | '/dashboard/admin'
     | '/dashboard/collections'
     | '/dashboard/communities'
     | '/dashboard/my-submissions'
     | '/dashboard/submit'
     | '/dashboard/collections/$id/edit'
     | '/dashboard/communities/$id/edit'
+    | '/dashboard/admin/submissions'
+    | '/dashboard/admin/users'
   id:
     | '__root__'
     | '/'
@@ -228,12 +263,15 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/dashboard/collections/new'
     | '/dashboard/communities/new'
+    | '/dashboard/admin/'
     | '/dashboard/collections/'
     | '/dashboard/communities/'
     | '/dashboard/my-submissions/'
     | '/dashboard/submit/'
     | '/dashboard/collections/$id/edit'
     | '/dashboard/communities/$id/edit'
+    | '/dashboard/admin/submissions/'
+    | '/dashboard/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -248,12 +286,15 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DashboardCollectionsNewRoute: typeof DashboardCollectionsNewRoute
   DashboardCommunitiesNewRoute: typeof DashboardCommunitiesNewRoute
+  DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
   DashboardCollectionsIndexRoute: typeof DashboardCollectionsIndexRoute
   DashboardCommunitiesIndexRoute: typeof DashboardCommunitiesIndexRoute
   DashboardMySubmissionsIndexRoute: typeof DashboardMySubmissionsIndexRoute
   DashboardSubmitIndexRoute: typeof DashboardSubmitIndexRoute
   DashboardCollectionsIdEditRoute: typeof DashboardCollectionsIdEditRoute
   DashboardCommunitiesIdEditRoute: typeof DashboardCommunitiesIdEditRoute
+  DashboardAdminSubmissionsIndexRoute: typeof DashboardAdminSubmissionsIndexRoute
+  DashboardAdminUsersIndexRoute: typeof DashboardAdminUsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -342,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCollectionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/admin/': {
+      id: '/dashboard/admin/'
+      path: '/dashboard/admin'
+      fullPath: '/dashboard/admin/'
+      preLoaderRoute: typeof DashboardAdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/communities/new': {
       id: '/dashboard/communities/new'
       path: '/dashboard/communities/new'
@@ -361,6 +409,20 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/users/': {
+      id: '/dashboard/admin/users/'
+      path: '/dashboard/admin/users'
+      fullPath: '/dashboard/admin/users/'
+      preLoaderRoute: typeof DashboardAdminUsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/admin/submissions/': {
+      id: '/dashboard/admin/submissions/'
+      path: '/dashboard/admin/submissions'
+      fullPath: '/dashboard/admin/submissions/'
+      preLoaderRoute: typeof DashboardAdminSubmissionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/communities/$id/edit': {
@@ -392,12 +454,15 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DashboardCollectionsNewRoute: DashboardCollectionsNewRoute,
   DashboardCommunitiesNewRoute: DashboardCommunitiesNewRoute,
+  DashboardAdminIndexRoute: DashboardAdminIndexRoute,
   DashboardCollectionsIndexRoute: DashboardCollectionsIndexRoute,
   DashboardCommunitiesIndexRoute: DashboardCommunitiesIndexRoute,
   DashboardMySubmissionsIndexRoute: DashboardMySubmissionsIndexRoute,
   DashboardSubmitIndexRoute: DashboardSubmitIndexRoute,
   DashboardCollectionsIdEditRoute: DashboardCollectionsIdEditRoute,
   DashboardCommunitiesIdEditRoute: DashboardCommunitiesIdEditRoute,
+  DashboardAdminSubmissionsIndexRoute: DashboardAdminSubmissionsIndexRoute,
+  DashboardAdminUsersIndexRoute: DashboardAdminUsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

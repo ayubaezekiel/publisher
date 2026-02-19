@@ -1,12 +1,35 @@
-import { buttonVariants } from '@/components/ui/button'
-import { deleteCommunity, getCommunities } from '@/lib/actions/communities'
-import { cn } from '@/lib/utils'
-import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
+import {
+  Link,
+  createFileRoute,
+  redirect,
+  useRouter,
+} from '@tanstack/react-router'
 import { Edit2, Plus, Trash2, Users } from 'lucide-react'
 import { useState } from 'react'
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog'
+import { buttonVariants } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { deleteCommunity, getCommunities } from '@/lib/actions/communities'
+import type { UserRole } from '@/lib/permissions'
+import { meetsMinRole } from '@/lib/permissions'
+import { getSessionFn } from '@/lib/session'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/dashboard/communities/')({
   component: CommunitiesManage,
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session?.user) throw redirect({ to: '/' })
+    const role = (session.user.role ?? 'reader') as UserRole
+    if (!meetsMinRole(role, 'editor')) throw redirect({ to: '/dashboard' })
+  },
   loader: () => getCommunities(),
 })
 
@@ -15,8 +38,7 @@ function CommunitiesManage() {
   const router = useRouter()
   const [deleting, setDeleting] = useState<string | null>(null)
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete community "${name}"? This cannot be undone.`)) return
+  const handleDelete = async (id: string) => {
     setDeleting(id)
     try {
       await deleteCommunity({ data: id })
@@ -58,7 +80,7 @@ function CommunitiesManage() {
           </Link>
         </div>
 
-        {/* List */}
+        {/* Table */}
         {communities.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="p-4 rounded-full bg-muted mb-4">
@@ -78,63 +100,91 @@ function CommunitiesManage() {
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-border rounded-2xl border border-border overflow-hidden">
-            {communities.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center justify-between gap-4 px-5 py-4 bg-card hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                    <Users className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold text-foreground truncate">
-                      {c.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      /{c.slug} · {c.collections.length} collection(s) ·{' '}
-                      {c.subCommunities.length} sub-communit
-                      {c.subCommunities.length !== 1 ? 'ies' : 'y'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    to="/communities/$slug"
-                    params={{ slug: c.slug }}
-                    className={cn(
-                      buttonVariants({ variant: 'ghost', size: 'sm' }),
-                      'text-xs',
-                    )}
-                  >
-                    View
-                  </Link>
-                  <Link
-                    to="/dashboard/communities/$id/edit"
-                    params={{ id: c.id }}
-                    className={cn(
-                      buttonVariants({ variant: 'outline', size: 'icon-sm' }),
-                      'inline-flex items-center justify-center',
-                    )}
-                    title="Edit"
-                  >
-                    <Edit2 className="h-3.5 w-3.5" />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(c.id, c.name)}
-                    disabled={deleting === c.id}
-                    className={cn(
-                      buttonVariants({ variant: 'ghost', size: 'icon-sm' }),
-                      'inline-flex items-center justify-center text-destructive hover:bg-destructive/10',
-                    )}
-                    title="Delete"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-2xl border border-border overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/40">
+                  <TableHead>Community</TableHead>
+                  <TableHead>Slug</TableHead>
+                  <TableHead className="text-center">Collections</TableHead>
+                  <TableHead className="text-center">Sub-communities</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {communities.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                          <Users className="h-4 w-4" />
+                        </div>
+                        <span className="font-medium text-foreground">
+                          {c.name}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground font-mono text-xs">
+                      /{c.slug}
+                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">
+                      {c.collections.length}
+                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">
+                      {c.subCommunities.length}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          to="/communities/$slug"
+                          params={{ slug: c.slug }}
+                          className={cn(
+                            buttonVariants({ variant: 'ghost', size: 'sm' }),
+                            'text-xs',
+                          )}
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to="/dashboard/communities/$id/edit"
+                          params={{ id: c.id }}
+                          className={cn(
+                            buttonVariants({
+                              variant: 'outline',
+                              size: 'icon-sm',
+                            }),
+                            'inline-flex items-center justify-center',
+                          )}
+                          title="Edit"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </Link>
+                        <DeleteConfirmDialog
+                          itemName={c.name}
+                          onConfirm={() => handleDelete(c.id)}
+                          loading={deleting === c.id}
+                          trigger={
+                            <button
+                              disabled={deleting === c.id}
+                              className={cn(
+                                buttonVariants({
+                                  variant: 'ghost',
+                                  size: 'icon-sm',
+                                }),
+                                'inline-flex items-center justify-center text-destructive hover:bg-destructive/10',
+                              )}
+                              title="Delete"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

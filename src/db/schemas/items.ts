@@ -1,25 +1,28 @@
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
   index,
-  jsonb,
-  pgEnum,
-  pgTable,
+  json,
+  mysqlEnum,
+  mysqlTable,
   text,
   timestamp,
-  uuid,
-} from 'drizzle-orm/pg-core'
+  varchar,
+} from 'drizzle-orm/mysql-core'
+
 import { createdAt, id, updatedAt } from '../utils'
-import { collection } from './collections'
 import { user } from './auth-schema'
 import { bitstream } from './bitstreams'
+import { collection } from './collections'
 
-export const itemStatusEnum = pgEnum('item_status', [
+export const itemStatusEnum = mysqlEnum('item_status', [
   'workflow', // In review/submission process
   'archived', // Published and visible
   'withdrawn', // Removed from public view
 ])
+  .default('workflow')
+  .notNull()
 
-export const item = pgTable(
+export const item = mysqlTable(
   'item',
   {
     id,
@@ -31,25 +34,28 @@ export const item = pgTable(
     publisher: text('publisher'),
     citation: text('citation'),
 
-    slug: text('slug').unique(), // Friendly URL part if needed
+    slug: varchar('slug', { length: 255 }).unique(), // Friendly URL part if needed
 
-    status: itemStatusEnum('status').default('workflow').notNull(),
+    status: itemStatusEnum,
 
     // Flexible Metadata (Dublin Core format stored as JSON)
     // Example: { "dc.contributor.author": ["Smith, John", "Doe, Jane"], "dc.subject": ["AI", "Computing"] }
-    metadata: jsonb('metadata')
+    metadata: json('metadata')
       .$type<Record<string, any>>()
-      .default({})
+      .default(sql`(JSON_OBJECT())`)
       .notNull(),
 
     // Relationships
-    collectionId: uuid('collection_id')
+    collectionId: varchar('collection_id', { length: 255 })
       .notNull()
       .references(() => collection.id, { onDelete: 'cascade' }),
 
-    submitterId: uuid('submitter_id').references(() => user.id, {
-      onDelete: 'set null',
-    }),
+    submitterId: varchar('submitter_id', { length: 255 }).references(
+      () => user.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
 
     createdAt,
     updatedAt,
@@ -75,4 +81,4 @@ export const itemRelations = relations(item, ({ one, many }) => ({
 
 export type Item = typeof item.$inferSelect
 export type NewItem = typeof item.$inferInsert
-export type ItemStatus = (typeof itemStatusEnum.enumValues)[number]
+export type ItemStatus = typeof itemStatusEnum

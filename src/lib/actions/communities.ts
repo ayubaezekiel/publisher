@@ -1,7 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '@/db'
 import { community } from '@/db/schemas/communities'
 
 const communitySchema = z.object({
@@ -15,6 +14,7 @@ const communitySchema = z.object({
 
 export const getCommunities = createServerFn({ method: 'GET' }).handler(
   async () => {
+    const { db } = await import('@/db')
     const communities = await db.query.community.findMany({
       orderBy: [desc(community.createdAt)],
       with: {
@@ -29,6 +29,7 @@ export const getCommunities = createServerFn({ method: 'GET' }).handler(
 export const getCommunityBySlug = createServerFn({ method: 'GET' })
   .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
+    const { db } = await import('@/db')
     const comm = await db.query.community.findFirst({
       where: eq(community.slug, slug),
       with: {
@@ -43,8 +44,10 @@ export const getCommunityBySlug = createServerFn({ method: 'GET' })
 export const createCommunity = createServerFn({ method: 'POST' })
   .inputValidator((data: z.infer<typeof communitySchema>) => data)
   .handler(async ({ data }) => {
-    const [newCommunity] = await db.insert(community).values(data).returning()
-    return newCommunity
+    const { db } = await import('@/db')
+    const id = crypto.randomUUID()
+    await db.insert(community).values({ ...data, id })
+    return { id }
   })
 
 export const updateCommunity = createServerFn({ method: 'POST' })
@@ -52,16 +55,18 @@ export const updateCommunity = createServerFn({ method: 'POST' })
     (data: { id: string } & Partial<z.infer<typeof communitySchema>>) => data,
   )
   .handler(async ({ data }) => {
+    const { db } = await import('@/db')
     const { id, ...values } = data
-    const [updated] = await db
+    const updated = await db
       .update(community)
       .set(values)
       .where(eq(community.id, id))
-      .returning()
+
     return updated
   })
 export const deleteCommunity = createServerFn({ method: 'POST' })
   .inputValidator((id: string) => id)
   .handler(async ({ data: id }) => {
+    const { db } = await import('@/db')
     await db.delete(community).where(eq(community.id, id))
   })

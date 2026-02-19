@@ -4,8 +4,11 @@ import { defineConfig } from 'drizzle-kit'
 export default defineConfig({
   out: './drizzle',
   schema: './src/db/schemas/index.ts',
-  dialect: 'postgresql',
+  dialect: 'mysql',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
+    ssl: {
+      rejectUnauthorized: true,
+    },
   },
 })

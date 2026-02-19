@@ -1,9 +1,15 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  index,
+  mysqlTable,
+  text,
+  uniqueIndex,
+  varchar,
+} from 'drizzle-orm/mysql-core'
 import { createdAt, id, updatedAt } from '../utils'
 import { collection } from './collections'
 
-export const community = pgTable(
+export const community = mysqlTable(
   'community',
   {
     id,
@@ -11,10 +17,10 @@ export const community = pgTable(
     shortDescription: text('short_description'),
     introductoryText: text('introductory_text'),
     logoUrl: text('logo_url'),
-    slug: text('slug').notNull().unique(),
+    slug: varchar('slug', { length: 255 }).notNull().unique(),
 
     // Self-referencing relationship for sub-communities
-    parentCommunityId: uuid('parent_community_id'),
+    parentCommunityId: varchar('parent_community_id', { length: 255 }),
 
     createdAt,
     updatedAt,

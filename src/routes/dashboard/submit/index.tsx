@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import {
+  Link,
+  createFileRoute,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router'
 import { addBitstreamToItem, createItem } from '@/lib/actions/items'
 import { getCollections } from '@/lib/actions/collections'
 import { buttonVariants } from '@/components/ui/button'
@@ -15,9 +20,14 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { Loader2, Send, Upload } from 'lucide-react'
+import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/submit/')({
   component: SubmitPage,
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session?.user) throw redirect({ to: '/' })
+  },
   loader: () => getCollections(),
 })
 

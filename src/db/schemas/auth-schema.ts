@@ -1,58 +1,60 @@
-import { relations } from 'drizzle-orm'
 import {
   boolean,
   index,
-  pgEnum,
-  pgTable,
+  mysqlEnum,
+  mysqlTable,
   text,
   timestamp,
-  uuid,
-} from 'drizzle-orm/pg-core'
+  varchar,
+} from 'drizzle-orm/mysql-core'
+import { relations } from 'drizzle-orm'
 import { createdAt, id, updatedAt } from '../utils'
 
-export const userRoleEnum = pgEnum('user_role', [
+export const userRoleEnum = mysqlEnum('user_role', [
   'reader', // browse & download only
   'author', // submit & publish papers
   'reviewer', // peer review assigned submissions
   'editor', // manage pipeline, assign reviewers, approve/reject
   'admin', // full platform control
 ])
+  .default('reader')
+  .notNull()
 
-export const user = pgTable('user', {
+export const user = mysqlTable('user', {
   id,
-  name: text('name').notNull(),
-  role: userRoleEnum('role').notNull().default('author'),
-  email: text('email').notNull().unique(),
+  name: varchar('name', { length: 255 }).notNull(),
+  role: userRoleEnum,
+  email: varchar('email', { length: 255 }).notNull().unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
   createdAt,
   updatedAt,
 })
 
-export const session = pgTable(
+export const session = mysqlTable(
   'session',
   {
     id,
     expiresAt: timestamp('expires_at').notNull(),
-    token: text('token').notNull().unique(),
+    token: varchar('token', { length: 255 }).notNull().unique(),
     createdAt,
     updatedAt,
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
-    userId: uuid('user_id')
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
   },
   (table) => [index('session_userId_idx').on(table.userId)],
 )
 
-export const account = pgTable(
+export const account = mysqlTable(
   'account',
   {
     id,
-    accountId: uuid('account_id').notNull(),
-    providerId: text('provider_id').notNull(),
-    userId: uuid('user_id')
+    accountId: varchar('account_id', { length: 255 }).notNull(),
+    providerId: varchar('provider_id', { length: 255 }).notNull(),
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     accessToken: text('access_token'),
@@ -68,11 +70,11 @@ export const account = pgTable(
   (table) => [index('account_userId_idx').on(table.userId)],
 )
 
-export const verification = pgTable(
+export const verification = mysqlTable(
   'verification',
   {
     id,
-    identifier: text('identifier').notNull(),
+    identifier: varchar('identifier', { length: 255 }).notNull(),
     value: text('value').notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     createdAt,

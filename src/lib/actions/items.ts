@@ -1,7 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '@/db'
 import { bitstream } from '@/db/schemas/bitstreams'
 import { item } from '@/db/schemas/items'
 
@@ -19,6 +18,7 @@ const itemSchema = z.object({
 })
 
 export const getItems = createServerFn({ method: 'GET' }).handler(async () => {
+  const { db } = await import('@/db')
   const items = await db.query.item.findMany({
     orderBy: [desc(item.createdAt)],
     with: {
@@ -33,6 +33,7 @@ export const getItems = createServerFn({ method: 'GET' }).handler(async () => {
 export const getItemById = createServerFn({ method: 'GET' })
   .inputValidator((id: string) => id)
   .handler(async ({ data: id }) => {
+    const { db } = await import('@/db')
     const it = await db.query.item.findFirst({
       where: eq(item.id, id),
       with: {
@@ -47,14 +48,15 @@ export const getItemById = createServerFn({ method: 'GET' })
 export const createItem = createServerFn({ method: 'POST' })
   .inputValidator((data: z.infer<typeof itemSchema>) => data)
   .handler(async ({ data }) => {
-    const [newItem] = await db
-      .insert(item)
-      .values({
-        ...data,
-        status: data.status || 'workflow',
-      })
-      .returning()
-    return newItem
+    const { db } = await import('@/db')
+    const id = crypto.randomUUID()
+    await db.insert(item).values({
+      ...data,
+      id,
+      status: data.status || 'workflow',
+    })
+
+    return { id }
   })
 
 export const updateItem = createServerFn({ method: 'POST' })
@@ -62,12 +64,10 @@ export const updateItem = createServerFn({ method: 'POST' })
     (data: { id: string } & Partial<z.infer<typeof itemSchema>>) => data,
   )
   .handler(async ({ data }) => {
+    const { db } = await import('@/db')
     const { id, ...values } = data
-    const [updated] = await db
-      .update(item)
-      .set(values)
-      .where(eq(item.id, id))
-      .returning()
+    const updated = await db.update(item).set(values).where(eq(item.id, id))
+
     return updated
   })
 
@@ -83,11 +83,12 @@ export const addBitstreamToItem = createServerFn({ method: 'POST' })
     }) => data,
   )
   .handler(async ({ data }) => {
-    const [newBitstream] = await db
-      .insert(bitstream)
-      .values({
-        ...data,
-      })
-      .returning()
-    return newBitstream
+    const { db } = await import('@/db')
+    const id = crypto.randomUUID()
+    await db.insert(bitstream).values({
+      ...data,
+      id,
+    })
+
+    return { id }
   })

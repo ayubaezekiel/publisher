@@ -2,23 +2,23 @@ import { relations } from 'drizzle-orm'
 import {
   boolean,
   index,
-  integer,
-  pgEnum,
-  pgTable,
+  int,
+  mysqlEnum,
+  mysqlTable,
   text,
   uniqueIndex,
-  uuid,
-} from 'drizzle-orm/pg-core'
+  varchar,
+} from 'drizzle-orm/mysql-core'
 import { createdAt, id, updatedAt } from '../utils'
 import { account, session, user } from './auth-schema'
 
-export const publicationLevelEnum = pgEnum('publication_level', [
+export const publicationLevelEnum = mysqlEnum('publication_level', [
   'undergraduate',
   'postgraduate',
   'graduate',
 ])
 
-export const academicDegreeEnum = pgEnum('academic_degree', [
+export const academicDegreeEnum = mysqlEnum('academic_degree', [
   'bachelor',
   'master',
   'doctorate',
@@ -29,41 +29,41 @@ export const academicDegreeEnum = pgEnum('academic_degree', [
   'researcher',
 ])
 
-export const profile = pgTable(
+export const profile = mysqlTable(
   'profile',
   {
     id,
 
     // ── One-to-one link to auth user ──
-    userId: uuid('user_id')
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .unique()
       .references(() => user.id, { onDelete: 'cascade' }),
 
     // ── Identity ──
     name: text('name').notNull(),
-    email: text('email').notNull().unique(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
     image: text('image'),
     bio: text('bio'),
 
     // ── Academic credentials ──
-    degree: academicDegreeEnum('degree'),
+    degree: academicDegreeEnum,
     fieldOfStudy: text('field_of_study'), // e.g. "Computational Biology"
-    discipline: text('discipline'), // e.g. "Natural Sciences"
-    publicationLevel: publicationLevelEnum('publication_level'),
+    discipline: varchar('discipline', { length: 255 }), // e.g. "Natural Sciences"
+    publicationLevel: publicationLevelEnum,
 
     // ── Institution / affiliation ──
-    institution: text('institution'), // e.g. "University of Lagos"
+    institution: varchar('institution', { length: 255 }), // e.g. "University of Lagos"
     department: text('department'), // e.g. "Department of Physics"
     facultyPosition: text('faculty_position'), // e.g. "Associate Professor"
 
     // ── Publication stats (denormalised for quick reads) ──
-    totalPublications: integer('total_publications').default(0).notNull(),
-    totalCitations: integer('total_citations').default(0).notNull(),
-    hIndex: integer('h_index').default(0).notNull(),
+    totalPublications: int('total_publications').default(0).notNull(),
+    totalCitations: int('total_citations').default(0).notNull(),
+    hIndex: int('h_index').default(0).notNull(),
 
     // ── Social / academic links ──
-    orcidId: text('orcid_id'), // e.g. "0000-0002-1825-0097"
+    orcidId: varchar('orcid_id', { length: 255 }), // e.g. "0000-0002-1825-0097"
     googleScholarUrl: text('google_scholar_url'),
     researchGateUrl: text('research_gate_url'),
     personalWebsite: text('personal_website'),
@@ -103,5 +103,5 @@ export const profileRelations = relations(profile, ({ one }) => ({
 export type Profile = typeof profile.$inferSelect
 export type NewProfile = typeof profile.$inferInsert
 
-export type PublicationLevel = (typeof publicationLevelEnum.enumValues)[number]
-export type AcademicDegree = (typeof academicDegreeEnum.enumValues)[number]
+export type PublicationLevel = typeof publicationLevelEnum
+export type AcademicDegree = typeof academicDegreeEnum

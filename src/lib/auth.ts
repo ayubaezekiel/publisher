@@ -1,12 +1,13 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-
-import { db } from '@/db' // your drizzle instance
+import { db } from '@/db'
+import * as schema from '@/db/schemas'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: 'pg', // or "mysql", "sqlite"
+    provider: 'mysql',
+    schema: schema,
   }),
   emailAndPassword: {
     enabled: true,

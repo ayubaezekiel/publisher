@@ -1,12 +1,17 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { FileText, Plus } from 'lucide-react'
 import { getItems } from '@/lib/actions/items'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/my-submissions/')({
   component: MySubmissions,
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session?.user) throw redirect({ to: '/' })
+  },
   loader: async () => getItems(),
 })
 

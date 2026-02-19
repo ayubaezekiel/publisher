@@ -1,10 +1,16 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  index,
+  mysqlTable,
+  text,
+  uniqueIndex,
+  varchar,
+} from 'drizzle-orm/mysql-core'
 import { createdAt, id, updatedAt } from '../utils'
 import { community } from './communities'
 import { item } from './items'
 
-export const collection = pgTable(
+export const collection = mysqlTable(
   'collection',
   {
     id,
@@ -12,10 +18,10 @@ export const collection = pgTable(
     shortDescription: text('short_description'),
     introductoryText: text('introductory_text'),
     logoUrl: text('logo_url'),
-    slug: text('slug').notNull().unique(),
+    slug: varchar('slug', { length: 255 }).notNull().unique(),
 
     // Relationship
-    communityId: uuid('community_id')
+    communityId: varchar('community_id', { length: 255 })
       .notNull()
       .references(() => community.id, { onDelete: 'cascade' }),
 

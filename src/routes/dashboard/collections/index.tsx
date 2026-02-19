@@ -1,12 +1,35 @@
+import {
+  Link,
+  createFileRoute,
+  redirect,
+  useRouter,
+} from '@tanstack/react-router'
+import { Edit2, FolderOpen, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 import { deleteCollection, getCollections } from '@/lib/actions/collections'
 import { cn } from '@/lib/utils'
-import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import { Edit2, FolderOpen, Plus, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { getSessionFn } from '@/lib/session'
+import { meetsMinRole } from '@/lib/permissions'
+import type { UserRole } from '@/lib/permissions'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog'
 
 export const Route = createFileRoute('/dashboard/collections/')({
   component: CollectionsManage,
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session?.user) throw redirect({ to: '/' })
+    const role = (session.user.role ?? 'reader') as UserRole
+    if (!meetsMinRole(role, 'editor')) throw redirect({ to: '/dashboard' })
+  },
   loader: () => getCollections(),
 })
 
@@ -15,8 +38,7 @@ function CollectionsManage() {
   const router = useRouter()
   const [deleting, setDeleting] = useState<string | null>(null)
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete collection "${name}"? This cannot be undone.`)) return
+  const handleDelete = async (id: string) => {
     setDeleting(id)
     try {
       await deleteCollection({ data: id })
@@ -58,7 +80,7 @@ function CollectionsManage() {
           </Link>
         </div>
 
-        {/* List */}
+        {/* Table */}
         {collections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="p-4 rounded-full bg-muted mb-4">
@@ -78,62 +100,91 @@ function CollectionsManage() {
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-border rounded-2xl border border-border overflow-hidden">
-            {collections.map((col) => (
-              <div
-                key={col.id}
-                className="flex items-center justify-between gap-4 px-5 py-4 bg-card hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                    <FolderOpen className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-semibold text-foreground truncate">
-                      {col.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      /{col.slug} · {col.community.name} · {col.items.length}{' '}
-                      item(s)
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    to="/collections/$slug"
-                    params={{ slug: col.slug }}
-                    className={cn(
-                      buttonVariants({ variant: 'ghost', size: 'sm' }),
-                      'text-xs',
-                    )}
-                  >
-                    View
-                  </Link>
-                  <Link
-                    to="/dashboard/collections/$id/edit"
-                    params={{ id: col.id }}
-                    className={cn(
-                      buttonVariants({ variant: 'outline', size: 'icon-sm' }),
-                      'inline-flex items-center justify-center',
-                    )}
-                    title="Edit"
-                  >
-                    <Edit2 className="h-3.5 w-3.5" />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(col.id, col.name)}
-                    disabled={deleting === col.id}
-                    className={cn(
-                      buttonVariants({ variant: 'ghost', size: 'icon-sm' }),
-                      'inline-flex items-center justify-center text-destructive hover:bg-destructive/10',
-                    )}
-                    title="Delete"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-2xl border border-border overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/40">
+                  <TableHead>Collection</TableHead>
+                  <TableHead>Community</TableHead>
+                  <TableHead>Slug</TableHead>
+                  <TableHead className="text-center">Items</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {collections.map((col) => (
+                  <TableRow key={col.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                          <FolderOpen className="h-4 w-4" />
+                        </div>
+                        <span className="font-medium text-foreground">
+                          {col.name}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                      {col.community.name}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground font-mono text-xs">
+                      /{col.slug}
+                    </TableCell>
+                    <TableCell className="text-center text-muted-foreground">
+                      {col.items.length}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          to="/collections/$slug"
+                          params={{ slug: col.slug }}
+                          className={cn(
+                            buttonVariants({ variant: 'ghost', size: 'sm' }),
+                            'text-xs',
+                          )}
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to="/dashboard/collections/$id/edit"
+                          params={{ id: col.id }}
+                          className={cn(
+                            buttonVariants({
+                              variant: 'outline',
+                              size: 'icon-sm',
+                            }),
+                            'inline-flex items-center justify-center',
+                          )}
+                          title="Edit"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </Link>
+                        <DeleteConfirmDialog
+                          itemName={col.name}
+                          onConfirm={() => handleDelete(col.id)}
+                          loading={deleting === col.id}
+                          trigger={
+                            <button
+                              disabled={deleting === col.id}
+                              className={cn(
+                                buttonVariants({
+                                  variant: 'ghost',
+                                  size: 'icon-sm',
+                                }),
+                                'inline-flex items-center justify-center text-destructive hover:bg-destructive/10',
+                              )}
+                              title="Delete"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
