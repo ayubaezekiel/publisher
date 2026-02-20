@@ -40,7 +40,7 @@ function AllSubmissions() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
-  const filtered = submissions.filter((s) => {
+  const filtered = submissions.filter((s: any) => {
     const matchesSearch =
       s.title.toLowerCase().includes(search.toLowerCase()) ||
       (s.submitter?.name ?? '').toLowerCase().includes(search.toLowerCase())
@@ -130,7 +130,7 @@ function AllSubmissions() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((sub) => (
+                filtered.map((sub: any) => (
                   <TableRow key={sub.id}>
                     <TableCell className="max-w-[220px]">
                       <Link

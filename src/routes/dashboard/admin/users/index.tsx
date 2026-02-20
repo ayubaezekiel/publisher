@@ -45,7 +45,7 @@ function UsersManagement() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
   const filtered = users.filter(
-    (u) =>
+    (u: any) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase()),
   )
@@ -120,7 +120,7 @@ function UsersManagement() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((u) => {
+                filtered.map((u: any) => {
                   const role = (u.role as UserRole) ?? 'reader'
                   const isSelf = u.id === currentUserId
                   return (
@@ -191,7 +191,7 @@ function UsersManagement() {
                                   onClick={() => setOpenDropdown(null)}
                                 />
                                 <div className="absolute right-0 top-full mt-1.5 z-20 w-40 bg-popover border border-border rounded-xl shadow-lg overflow-hidden">
-                                  {ALL_ROLES.map((r) => (
+                                  {ALL_ROLES.map((r: any) => (
                                     <button
                                       key={r}
                                       onClick={() => handleRoleChange(u.id, r)}
@@ -227,7 +227,7 @@ function UsersManagement() {
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground items-center">
             <span className="font-medium">Roles:</span>
-            {ALL_ROLES.map((r) => (
+            {ALL_ROLES.map((r: any) => (
               <RoleBadge key={r} role={r} />
             ))}
           </div>

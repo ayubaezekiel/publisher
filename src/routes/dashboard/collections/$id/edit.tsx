@@ -23,7 +23,7 @@ export const Route = createFileRoute('/dashboard/collections/$id/edit')({
       getCollections(),
       getCommunities(),
     ])
-    const current = allCollections.find((c) => c.id === params.id)
+    const current = allCollections.find((c: any) => c.id === params.id)
     return { current, communities }
   },
 })
@@ -123,7 +123,7 @@ function EditCollection() {
                 <SelectValue placeholder="Select a community…" />
               </SelectTrigger>
               <SelectContent>
-                {communities.map((c) => (
+                {communities.map((c: any) => (
                   <SelectItem key={c.id} value={c.id}>
                     {c.name}
                   </SelectItem>

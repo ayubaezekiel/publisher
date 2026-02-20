@@ -169,7 +169,7 @@ function NewCommunity() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__none">None</SelectItem>
-                {allCommunities.map((c) => (
+                {allCommunities.map((c: any) => (
                   <SelectItem key={c.id} value={c.id}>
                     {c.name}
                   </SelectItem>

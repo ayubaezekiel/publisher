@@ -109,7 +109,7 @@ function NewCollection() {
                     No communities — create one first
                   </SelectItem>
                 ) : (
-                  communities.map((c) => (
+                  communities.map((c: any) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
                     </SelectItem>

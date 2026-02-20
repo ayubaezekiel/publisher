@@ -126,7 +126,7 @@ function SubmitPage() {
                     No collections available
                   </SelectItem>
                 ) : (
-                  collections.map((col) => (
+                  collections.map((col: any) => (
                     <SelectItem key={col.id} value={col.id}>
                       {col.name}
                     </SelectItem>

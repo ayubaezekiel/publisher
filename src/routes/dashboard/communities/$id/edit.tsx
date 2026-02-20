@@ -19,7 +19,7 @@ export const Route = createFileRoute('/dashboard/communities/$id/edit')({
   component: EditCommunity,
   loader: async ({ params }) => {
     const all = await getCommunities()
-    const current = all.find((c) => c.id === params.id)
+    const current = all.find((c: any) => c.id === params.id)
     return { current, all }
   },
 })
@@ -176,8 +176,8 @@ function EditCommunity() {
               <SelectContent>
                 <SelectItem value="__none">None</SelectItem>
                 {all
-                  .filter((c) => c.id !== id)
-                  .map((c) => (
+                  .filter((c: any) => c.id !== id)
+                  .map((c: any) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
                     </SelectItem>

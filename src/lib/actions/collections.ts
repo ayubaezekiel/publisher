@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { collection } from '@/db/schemas/collections'
+import { db } from '@/db'
 
 const collectionSchema = z.object({
   name: z.string().min(1),
@@ -14,7 +15,6 @@ const collectionSchema = z.object({
 
 export const getCollections = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const { db } = await import('@/db')
     const collections = await db.query.collection.findMany({
       orderBy: [desc(collection.createdAt)],
       with: {
@@ -29,7 +29,6 @@ export const getCollections = createServerFn({ method: 'GET' }).handler(
 export const getCollectionBySlug = createServerFn({ method: 'GET' })
   .inputValidator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    const { db } = await import('@/db')
     const col = await db.query.collection.findFirst({
       where: eq(collection.slug, slug),
       with: {
@@ -43,7 +42,6 @@ export const getCollectionBySlug = createServerFn({ method: 'GET' })
 export const createCollection = createServerFn({ method: 'POST' })
   .inputValidator((data: z.infer<typeof collectionSchema>) => data)
   .handler(async ({ data }) => {
-    const { db } = await import('@/db')
     const id = crypto.randomUUID()
     await db.insert(collection).values({ ...data, id })
     return { id }
@@ -54,7 +52,6 @@ export const updateCollection = createServerFn({ method: 'POST' })
     (data: { id: string } & Partial<z.infer<typeof collectionSchema>>) => data,
   )
   .handler(async ({ data }) => {
-    const { db } = await import('@/db')
     const { id, ...values } = data
     const updated = await db
       .update(collection)
@@ -66,6 +63,5 @@ export const updateCollection = createServerFn({ method: 'POST' })
 export const deleteCollection = createServerFn({ method: 'POST' })
   .inputValidator((id: string) => id)
   .handler(async ({ data: id }) => {
-    const { db } = await import('@/db')
     await db.delete(collection).where(eq(collection.id, id))
   })

@@ -112,7 +112,7 @@ function CollectionsManage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {collections.map((col) => (
+                {collections.map((col: any) => (
                   <TableRow key={col.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">

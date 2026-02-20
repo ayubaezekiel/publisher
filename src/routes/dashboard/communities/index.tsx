@@ -112,7 +112,7 @@ function CommunitiesManage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {communities.map((c) => (
+                {communities.map((c: any) => (
                   <TableRow key={c.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">

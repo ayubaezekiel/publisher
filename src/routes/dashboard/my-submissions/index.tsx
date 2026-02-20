@@ -80,7 +80,7 @@ function MySubmissions() {
           </div>
         ) : (
           <div className="space-y-4">
-            {items.map((item) => (
+            {items.map((item: any) => (
               <Card
                 key={item.id}
                 className="hover:shadow-md transition-shadow border-border"

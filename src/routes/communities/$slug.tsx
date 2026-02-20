@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Layers } from 'lucide-react'
+import { Collection } from '@/db/schemas/collections'
+import { Community } from '@/db/schemas/communities'
 import { getCommunityBySlug } from '@/lib/actions/communities'
 import {
   Card,
@@ -46,7 +48,7 @@ function CommunityDetail() {
                   No collections in this community yet.
                 </p>
               ) : (
-                community.collections.map((collection) => (
+                community.collections.map((collection: Collection) => (
                   <Link
                     key={collection.id}
                     to="/collections/$slug"
@@ -75,7 +77,7 @@ function CommunityDetail() {
                 Sub-communities
               </h2>
               <div className="grid gap-4 md:grid-cols-2">
-                {community.subCommunities.map((sub) => (
+                {community.subCommunities.map((sub: Community) => (
                   <Link
                     key={sub.id}
                     to="/communities/$slug"

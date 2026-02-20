@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Item } from '@/db/schemas/items'
 import { getCollectionBySlug } from '@/lib/actions/collections'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { FileText } from 'lucide-react'
 
 export const Route = createFileRoute('/collections/$slug')({
   component: CollectionDetail,
-  loader: async ({ params }) => getCollectionBySlug({ data: params.slug }),
+  loader: async ({ params }) =>
+    await getCollectionBySlug({ data: params.slug }),
 })
 
 function CollectionDetail() {
@@ -50,7 +52,7 @@ function CollectionDetail() {
               No items in this collection yet.
             </p>
           ) : (
-            collection.items.map((item) => (
+            collection.items.map((item: Item) => (
               <Link key={item.id} to="/items/$id" params={{ id: item.id }}>
                 <Card className="hover:shadow-md transition-shadow">
                   <CardHeader>

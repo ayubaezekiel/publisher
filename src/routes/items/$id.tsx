@@ -66,7 +66,7 @@ function ItemDetail() {
               Files in this item
             </h2>
             <div className="space-y-3">
-              {item.bitstreams.map((file) => (
+              {item.bitstreams.map((file: any) => (
                 <div
                   key={file.id}
                   className="flex items-center justify-between p-3 bg-accent/30 rounded-lg hover:bg-accent/50 transition-colors"
