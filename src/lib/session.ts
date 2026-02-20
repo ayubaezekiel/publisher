@@ -8,9 +8,14 @@ import { auth } from './auth'
  */
 export const getSessionFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    return session ?? null
+    try {
+      const request = getRequest()
+      const session = await auth.api.getSession({ headers: request.headers })
+      return session ?? null
+    } catch (error: any) {
+      console.error('getSessionFn Error:', error)
+      throw new Error(error.message || 'Failed to get session')
+    }
   },
 )
 
@@ -20,16 +25,22 @@ export const getSessionFn = createServerFn({ method: 'GET' }).handler(
  */
 export const requireAuthFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
+    try {
+      const request = getRequest()
+      const session = await auth.api.getSession({ headers: request.headers })
 
-    if (!session?.user) {
-      throw new Response(null, {
-        status: 302,
-        headers: { Location: '/' },
-      })
+      if (!session?.user) {
+        throw new Response(null, {
+          status: 302,
+          headers: { Location: '/' },
+        })
+      }
+      return session
+    } catch (error: any) {
+      if (error instanceof Response) throw error
+      console.error('requireAuthFn Error:', error)
+      throw new Error(error.message || 'Authentication required')
     }
-    return session
   },
 )
 
