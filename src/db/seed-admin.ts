@@ -72,13 +72,11 @@ async function seedAdmin() {
 
   // ── Create new admin via better-auth ──
   try {
-    const signUpResult = await auth.api.signUpEmail({
-      body: {
-        email,
-        password,
-        name,
-        role: 'admin',
-      },
+    const signUpResult = await (auth.api as any).signUpEmail({
+      email,
+      password,
+      name,
+      role: 'admin',
     })
 
     if (!signUpResult.user.id) {

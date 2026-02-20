@@ -1,6 +1,5 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { db } from '@/db'
 import * as schema from '@/db/schemas'
 
@@ -26,5 +25,5 @@ export const auth = betterAuth({
       generateId: false,
     },
   },
-  plugins: [tanstackStartCookies()],
+  plugins: [],
 })

@@ -19,8 +19,10 @@ async function seed() {
     process.exit(0)
   }
 
-  const result = await auth.api.signUpEmail({
-    body: { email, password, name },
+  const result = await (auth.api as any).signUpEmail({
+    email,
+    password,
+    name,
   })
 
   if (result.user.id) {

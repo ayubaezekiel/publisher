@@ -1,17 +1,23 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { auth } from './auth'
+import type { User } from '@/db/schemas/auth-schema'
+
+export type Session = {
+  user: User
+  session: any
+}
 
 /**
  * Server function version of getSession for use in routes (beforeLoad, component, etc).
  * Client-safe RPC.
  */
 export const getSessionFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
+  async (): Promise<Session | null> => {
     try {
       const request = getRequest()
       const session = await auth.api.getSession({ headers: request.headers })
-      return session ?? null
+      return (session as Session) ?? null
     } catch (error: any) {
       console.error('getSessionFn Error:', error)
       throw new Error(error.message || 'Failed to get session')
@@ -24,10 +30,12 @@ export const getSessionFn = createServerFn({ method: 'GET' }).handler(
  * Client-safe RPC.
  */
 export const requireAuthFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
+  async (): Promise<Session> => {
     try {
       const request = getRequest()
-      const session = await auth.api.getSession({ headers: request.headers })
+      const session = (await auth.api.getSession({
+        headers: request.headers,
+      })) as Session
 
       if (!session?.user) {
         throw new Response(null, {

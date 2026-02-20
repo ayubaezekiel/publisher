@@ -3,6 +3,7 @@ import { collection } from '@/db/schemas/collections'
 import { community } from '@/db/schemas/communities'
 import { item } from '@/db/schemas/items'
 import { auth } from '@/lib/auth'
+import { Session } from '@/lib/session'
 import type { UserRole } from '@/lib/permissions'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
@@ -12,7 +13,9 @@ import { z } from 'zod'
 // ── Shared server-only helper ────────────────────────────────────────────────
 async function requireAdmin() {
   const request = getRequest()
-  const session = await auth.api.getSession({ headers: request.headers })
+  const session = (await auth.api.getSession({
+    headers: request.headers,
+  })) as Session
 
   if (!session?.user) {
     throw new Error('UNAUTHORIZED')
