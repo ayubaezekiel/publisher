@@ -15,9 +15,13 @@ import { LexicalEditor } from '@/components/LexicalEditor'
 import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/')({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
-    if (!session?.user) throw redirect({ to: '/' })
+    if (!session?.user)
+      throw redirect({
+        to: '/',
+        search: { login: true, redirectTo: location.pathname },
+      })
     return { user: session.user }
   },
   loader: ({ context }) => context,
@@ -95,7 +99,7 @@ function RouteComponent() {
 
         <div className="flex flex-col xl:flex-row gap-8 items-start">
           {/* ── Sidebar ── */}
-          <aside className="w-full xl:w-72 shrink-0 space-y-6">
+          <aside className="w-full xl:w-72 shrink-0 space-y-4 xl:space-y-6">
             {/* My Research */}
             <div className="space-y-2">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">

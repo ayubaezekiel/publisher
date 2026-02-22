@@ -24,9 +24,13 @@ import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/submit/')({
   component: SubmitPage,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
-    if (!session?.user) throw redirect({ to: '/' })
+    if (!session?.user)
+      throw redirect({
+        to: '/',
+        search: { login: true, redirectTo: location.pathname },
+      })
   },
   loader: () => getCollections(),
 })

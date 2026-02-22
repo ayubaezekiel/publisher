@@ -7,7 +7,8 @@ import {
   createRootRoute,
 } from '@tanstack/react-router'
 import { BookOpen, ChevronRight, Mail, MapPin, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
@@ -32,6 +33,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const { data: session } = authClient.useSession()
+  const router = Route.useMatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const search = router.search as { login?: boolean; redirectTo?: string }
+    if (search.login && !session) {
+      setLoginModalOpen(true)
+    }
+  }, [router.search, session])
+
+  const handleLoginSuccess = () => {
+    const search = router.search as { redirectTo?: string }
+    setLoginModalOpen(false)
+    if (search.redirectTo) {
+      navigate({ to: search.redirectTo })
+    }
+  }
 
   return (
     <html lang="en">
@@ -280,7 +298,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           </div>
         </footer>
 
-        <LoginModal open={loginModalOpen} onOpenChange={setLoginModalOpen} />
+        <LoginModal
+          open={loginModalOpen}
+          onOpenChange={setLoginModalOpen}
+          onSuccess={handleLoginSuccess}
+        />
         <Scripts />
       </body>
     </html>

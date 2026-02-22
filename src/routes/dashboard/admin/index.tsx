@@ -12,9 +12,13 @@ import { getSessionFn } from '@/lib/session'
 
 export const Route = createFileRoute('/dashboard/admin/')({
   component: AdminDashboard,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
-    if (!session?.user) throw redirect({ to: '/' })
+    if (!session?.user)
+      throw redirect({
+        to: '/',
+        search: { login: true, redirectTo: location.pathname },
+      })
     const role = session.user.role ?? 'reader'
     if (role !== 'admin') throw redirect({ to: '/dashboard' })
   },

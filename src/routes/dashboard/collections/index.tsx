@@ -24,9 +24,13 @@ import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog'
 
 export const Route = createFileRoute('/dashboard/collections/')({
   component: CollectionsManage,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
-    if (!session?.user) throw redirect({ to: '/' })
+    if (!session?.user)
+      throw redirect({
+        to: '/',
+        search: { login: true, redirectTo: location.pathname },
+      })
     const role = (session.user.role ?? 'reader') as UserRole
     if (!meetsMinRole(role, 'editor')) throw redirect({ to: '/dashboard' })
   },

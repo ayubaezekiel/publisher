@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router'
 import { Edit2, Plus, Trash2, Users } from 'lucide-react'
 import { useState } from 'react'
+import type { UserRole } from '@/lib/permissions'
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog'
 import { buttonVariants } from '@/components/ui/button'
 import {
@@ -17,17 +18,20 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { deleteCommunity, getCommunities } from '@/lib/actions/communities'
-import type { UserRole } from '@/lib/permissions'
 import { meetsMinRole } from '@/lib/permissions'
 import { getSessionFn } from '@/lib/session'
 import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/dashboard/communities/')({
   component: CommunitiesManage,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
-    if (!session?.user) throw redirect({ to: '/' })
-    const role = (session.user.role ?? 'reader') as UserRole
+    if (!session?.user)
+      throw redirect({
+        to: '/',
+        search: { login: true, redirectTo: location.pathname },
+      })
+    const role = session.user.role as UserRole
     if (!meetsMinRole(role, 'editor')) throw redirect({ to: '/dashboard' })
   },
   loader: () => getCommunities(),

@@ -384,7 +384,7 @@ function ToolbarPlugin({
       </div>
 
       {/* Formatting row */}
-      <div className="flex items-center gap-0.5 px-2 h-10 border-t overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex items-center gap-0.5 pl-2 pr-4 h-10 border-t overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* Block type */}
         <Select
           value={blockType}
